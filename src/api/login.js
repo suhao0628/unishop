@@ -13,3 +13,14 @@ export const getSMSCode = (captchaCode, captchaKey, phone) => {
     }
   })
 }
+
+export const codeLogin = (mobile, smsCode) => {
+  return request.post('/passport/login', {
+    form: {
+      isParty: false,
+      partyData: {},
+      mobile,
+      smsCode
+    }
+  })
+}
