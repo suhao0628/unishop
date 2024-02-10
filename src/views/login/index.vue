@@ -103,7 +103,7 @@ export default {
       console.log('发送登录请求')
 
       const res = await Login(this.mobile, this.msgCode)
-      console.log(res)
+      this.$store.commit('user/setUserInfo', res.data)
       this.$toast('登录成功')
 
       this.$router.push('/')
