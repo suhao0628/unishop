@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <van-nav-bar title="智慧商城" fixed />
+    <van-nav-bar title="UniShop" fixed />
 
     <van-search
       readonly
