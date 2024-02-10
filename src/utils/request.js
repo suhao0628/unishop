@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Toast } from 'vant'
+import store from '@/store'
 const request = axios.create({
   baseURL: 'http://cba.itlike.com/public/index.php?s=/api/',
   timeout: 5000
@@ -13,6 +14,11 @@ request.interceptors.request.use(function (config) {
     loadingType: 'spinner',
     duration: 0
   })
+  const token = store.getters.token
+  if (token) {
+    config.headers['Access-Token'] = token
+    config.headers.platform = 'H5'
+  }
   return config
 }, function (error) {
   return Promise.reject(error)
