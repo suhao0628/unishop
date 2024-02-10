@@ -17,7 +17,9 @@
         </div>
         <div class="form-item">
           <input class="inp" placeholder="请输入短信验证码" type="text">
-          <button>获取验证码</button>
+          <button @click="getSMSCode">
+            {{ currentSecond === totalSecond ? '获取验证码' : currentSecond + '秒后重新发送'}}
+          </button>
         </div>
       </div>
 
@@ -27,14 +29,21 @@
 </template>
 
 <script>
-import { getPicCode } from '@/api/login'
+import { getPicCode, getSMSCode } from '@/api/login'
 export default {
   name: 'LoginPage',
   data () {
     return {
       picKey: '', // 图形验证码唯一标识
       picUrl: '', // 图形验证码地址
-      picCode: '' // 输入的图形验证码
+      picCode: '', // 输入的图形验证码
+
+      totalSecond: 60, // 总秒数
+      currentSecond: 60, // 当前秒数，开定时器对 second--
+      timer: null, // 定时器 id
+
+      phone: '', // 手机号
+      SMSCode: '' // 短信验证码
     }
   },
   async created () {
@@ -45,8 +54,45 @@ export default {
       const { data: { base64, key } } = await getPicCode()
       this.picUrl = base64
       this.picKey = key
+    },
+
+    async getSMSCode () {
+      if (!this.validate()) {
+        return
+      }
+
+      if (!this.timer && this.currentSecond === this.totalSecond) {
+        await getSMSCode(this.picCode, this.picKey, this.phone)
+
+        this.$toast('短信发送成功，注意查收')
+
+        this.timer = setInterval(() => {
+          this.currentSecond--
+
+          if (this.currentSecond < 1) {
+            clearInterval(this.timer)
+            this.timer = null
+            this.currentSecond = this.totalSecond
+          }
+        }, 1000)
+      }
+    },
+
+    validate () {
+      if (!/^1[3-9]\d{9}$/.test(this.phone)) {
+        this.$toast('请输入正确的手机号:1XXXXXXXXXX')
+        return false
+      }
+      if (!/^\w{4}$/.test(this.picCode)) {
+        this.$toast('请输入正确的图形验证码')
+        return false
+      }
+      return true
     }
 
+  },
+  destroyed () {
+    clearInterval(this.timer)
   }
 }
 </script>
