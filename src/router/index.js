@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+// 一级路由
 import Login from '@/views/login'
 import Layout from '@/views/layout'
 import Search from '@/views/search'
@@ -7,7 +8,7 @@ import SearchList from '@/views/search/list'
 import ProDetail from '@/views/detail'
 import Pay from '@/views/pay'
 import Order from '@/views/order'
-
+// 二级路由
 import Home from '@/views/layout/home'
 import Category from '@/views/layout/category'
 import Cart from '@/views/layout/cart'
@@ -30,7 +31,7 @@ const router = new VueRouter({
     },
     { path: '/search', component: Search },
     { path: '/searchlist', component: SearchList },
-    // 动态路由传参，确认将来是哪个商品，路由参数中携带 id
+    // 动态路由传参
     { path: '/prodetail/:id', component: ProDetail },
     { path: '/pay', component: Pay },
     { path: '/myorder', component: Order }
