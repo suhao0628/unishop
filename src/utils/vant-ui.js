@@ -1,4 +1,3 @@
-// 按需导入
 import Vue from 'vue'
 import { Button, Tabbar, TabbarItem, NavBar, Toast, Search, Swipe, SwipeItem, Grid, GridItem, Icon } from 'vant'
 Vue.use(Button)
