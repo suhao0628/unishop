@@ -9,7 +9,7 @@
 
       <div class="form">
         <div class="form-item">
-          <input class="inp" maxlength="11" placeholder="请输入手机号码" type="text">
+          <input v-model="phone" class="inp" maxlength="11" placeholder="请输入手机号码" type="text">
         </div>
         <div class="form-item">
           <input v-model="picCode" class="inp" maxlength="5" placeholder="请输入图形验证码" type="text">
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="login-btn">登录</div>
+      <div @click="login" class="login-btn">登录</div>
     </div>
   </div>
 </template>
@@ -62,8 +62,8 @@ export default {
       }
 
       if (!this.timer && this.currentSecond === this.totalSecond) {
-        await getSMSCode(this.picCode, this.picKey, this.phone)
-
+        const res = await getSMSCode(this.picCode, this.picKey, this.phone)
+        console.log(res)
         this.$toast('短信发送成功，注意查收')
 
         this.timer = setInterval(() => {
@@ -91,7 +91,7 @@ export default {
     },
 
     async login () {
-      if (!this.validFn()) {
+      if (!this.validate()) {
         return
       }
 
@@ -102,7 +102,7 @@ export default {
 
       console.log('发送登录请求')
 
-      const res = await Login(this.mobile, this.msgCode)
+      const res = await Login(this.phone, this.SMSCode)
       this.$store.commit('user/setUserInfo', res.data)
       this.$toast('登录成功')
 

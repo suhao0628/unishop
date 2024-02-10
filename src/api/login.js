@@ -9,12 +9,12 @@ export const getSMSCode = (captchaCode, captchaKey, phone) => {
     form: {
       captchaCode,
       captchaKey,
-      phone
+      mobile: phone
     }
   })
 }
 
-export const codeLogin = (mobile, smsCode) => {
+export const Login = (mobile, smsCode) => {
   return request.post('/passport/login', {
     form: {
       isParty: false,
