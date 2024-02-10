@@ -12,6 +12,7 @@
       </template>
     </van-swipe>
 
+    <!-- 商品说明 -->
     <div class="info">
       <div class="title">
         <div class="price">
@@ -35,9 +36,10 @@
       </div>
     </div>
 
+    <!-- 商品评价 -->
     <div class="comment">
       <div class="comment-title">
-        <div class="left">商品评价 ({{ commentTotal }}条)</div>
+        <div class="left">商品评价 ({{ total }}条)</div>
         <div class="right">查看更多 <van-icon name="arrow" /> </div>
       </div>
       <div class="comment-list">
@@ -57,9 +59,11 @@
       </div>
     </div>
 
+    <!-- 商品描述 -->
     <div class="desc" v-html="detail.content">
     </div>
 
+    <!-- 底部 -->
     <div class="footer">
       <div @click="$router.push('/')" class="icon-home">
         <van-icon name="wap-home-o" />
@@ -74,6 +78,7 @@
       <div @click="buyNow" class="btn-buy">立刻购买</div>
     </div>
 
+    <!-- 加入购物车/立即购买 公用的弹层 -->
     <van-action-sheet v-model="showPannel" :title="mode === 'cart' ? '加入购物车' : '立刻购买'">
       <div class="product">
         <div class="product-title">
@@ -93,10 +98,11 @@
         </div>
         <div class="num-box">
           <span>数量</span>
-
+          <!-- v-model 本质上 :value 和 @input 的简写 -->
           <CountBox v-model="addCount"></CountBox>
         </div>
 
+        <!-- 有库存才显示提交按钮 -->
         <div class="showbtn" v-if="detail.stock_total > 0">
           <div class="btn" v-if="mode === 'cart'" @click="addCart">加入购物车</div>
           <div class="btn now" v-else @click="goBuyNow">立刻购买</div>
@@ -113,9 +119,11 @@ import { getProComments, getProDetail } from '@/api/product'
 import defaultImg from '@/assets/default-avatar.png'
 import CountBox from '@/components/CountBox.vue'
 import { addCart } from '@/api/cart'
+import loginConfirm from '@/mixins/loginConfirm'
 
 export default {
   name: 'ProDetail',
+  mixins: [loginConfirm],
   components: {
     CountBox
   },
@@ -124,13 +132,13 @@ export default {
       images: [],
       current: 0,
       detail: {},
-      commentTotal: 0,
-      commentList: [],
+      total: 0, // 评价总数
+      commentList: [], // 评价列表
       defaultImg,
-      showPannel: false,
-      mode: 'cart',
-      addCount: 1,
-      cartTotal: 0
+      showPannel: false, // 控制弹层的显示隐藏
+      mode: 'cart', // 标记弹层状态
+      addCount: 1, // 数字框绑定的数据
+      cartTotal: 0 // 购物车角标
     }
   },
   computed: {
@@ -155,7 +163,7 @@ export default {
     async getComments () {
       const { data: { list, total } } = await getProComments(this.goodsId, 3)
       this.commentList = list
-      this.commentTotal = total
+      this.total = total
     },
     addFn () {
       this.mode = 'cart'
@@ -166,12 +174,28 @@ export default {
       this.showPannel = true
     },
     async addCart () {
+      if (this.loginConfirm()) {
+        return
+      }
       const { data } = await addCart(this.goodsId, this.addCount, this.detail.skuList[0].goods_sku_id)
       this.cartTotal = data.cartTotal
       this.$toast('加入购物车成功')
       this.showPannel = false
+    },
+    goBuyNow () {
+      if (this.loginConfirm()) {
+        return
+      }
+      this.$router.push({
+        path: '/pay',
+        query: {
+          mode: 'buyNow',
+          goodsId: this.goodsId,
+          goodsSkuId: this.detail.skuList[0].goods_sku_id,
+          goodsNum: this.addCount
+        }
+      })
     }
-
   }
 }
 </script>
