@@ -12,7 +12,6 @@
       </template>
     </van-swipe>
 
-    <!-- 商品说明 -->
     <div class="info">
       <div class="title">
         <div class="price">
@@ -58,12 +57,9 @@
         </div>
       </div>
     </div>
-
-    <!-- 商品描述 -->
     <div class="desc" v-html="detail.content">
     </div>
 
-    <!-- 底部 -->
     <div class="footer">
       <div @click="$router.push('/')" class="icon-home">
         <van-icon name="wap-home-o" />
@@ -78,7 +74,6 @@
       <div @click="buyNow" class="btn-buy">立刻购买</div>
     </div>
 
-    <!-- 加入购物车/立即购买 公用的弹层 -->
     <van-action-sheet v-model="showPannel" :title="mode === 'cart' ? '加入购物车' : '立刻购买'">
       <div class="product">
         <div class="product-title">
@@ -98,11 +93,9 @@
         </div>
         <div class="num-box">
           <span>数量</span>
-          <!-- v-model 本质上 :value 和 @input 的简写 -->
           <CountBox v-model="addCount"></CountBox>
         </div>
 
-        <!-- 有库存才显示提交按钮 -->
         <div class="showbtn" v-if="detail.stock_total > 0">
           <div class="btn" v-if="mode === 'cart'" @click="addCart">加入购物车</div>
           <div class="btn now" v-else @click="goBuyNow">立刻购买</div>
@@ -132,13 +125,13 @@ export default {
       images: [],
       current: 0,
       detail: {},
-      total: 0, // 评价总数
-      commentList: [], // 评价列表
+      total: 0,
+      commentList: [],
       defaultImg,
-      showPannel: false, // 控制弹层的显示隐藏
-      mode: 'cart', // 标记弹层状态
-      addCount: 1, // 数字框绑定的数据
-      cartTotal: 0 // 购物车角标
+      showPannel: false,
+      mode: 'cart',
+      addCount: 1,
+      cartTotal: 0
     }
   },
   computed: {
